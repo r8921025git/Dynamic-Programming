@@ -1,0 +1,112 @@
+// Copyright (c) 2013 Elements of Programming Interviews. All rights reserved.
+
+#include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <iterator>
+#include <numeric>
+#include <random>
+#include <utility>
+#include <vector>
+
+using std::cout;
+using std::default_random_engine;
+using std::endl;
+using std::min;
+using std::pair;
+using std::random_device;
+using std::uniform_int_distribution;
+using std::vector;
+
+
+
+// first is beginning, second is end
+pair<int, int> FindLongestSubarrayLessEqualK(const vector<int> &A, int k) {
+    const int N = A.size();
+    vector<int> sum(N), length(N);
+    for (int i=0; i<N; ++i) {
+        sum[i] = A[i];
+        length[i] = 1;
+    }
+    for (int k=0; k<i; ++k) {
+        if ((A[i]+sum[j]<=k) && (length[j]+1>=length[i])
+        && (A[i]+sum[j]<=sum[i])) {
+            
+        }
+    }
+    
+}  
+
+// O(n^2) checking answer.
+template <typename T>
+void CheckAnswer(const vector<T> &A, const pair<int, int> &ans, const T &k) {
+  vector<T> sum(A.size() + 1, 0);
+  sum[0] = 0;
+  for (size_t i = 0; i < A.size(); ++i) {
+    sum[i + 1] = sum[i] + A[i];
+  }
+  if (ans.first != -1 && ans.second != -1) {
+    T s = 0;
+    for (size_t i = ans.first; i <= ans.second; ++i) {
+      s += A[i];
+    }
+    assert(s <= k);
+    for (size_t i = 0; i < sum.size(); ++i) {
+      for (size_t j = i + 1; j < sum.size(); ++j) {
+        if (sum[j] - sum[i] <= k) {
+          assert((j - i) <= (ans.second - ans.first + 1));
+        }
+      }
+    }
+  } else {
+    for (size_t i = 0; i < sum.size(); ++i) {
+      for (size_t j = i + 1; j < sum.size(); ++j) {
+        assert(sum[j] - sum[i] > k);
+      }
+    }
+  }
+}
+
+void SmallTest() {
+  vector<int> A = {1, 1};
+  int k = 0;
+  auto res = FindLongestSubarrayLessEqualK(A, k);
+  cout << "res = " << res.first << ", " << res.second << endl;
+  assert(res.first == -1 && res.second == -1);
+  k = -100;
+  res = FindLongestSubarrayLessEqualK(A, k);
+  cout << "res = " << res.first << ", " << res.second << endl;
+  assert(res.first == -1 && res.second == -1);
+}
+
+int main(int argc, char *argv[]) {
+  SmallTest();
+  default_random_engine gen((random_device())());
+  for (int times = 0; times < 1; ++times) {
+    int n, k;
+    if (argc == 3) {
+      n = atoi(argv[1]), k = atoi(argv[2]);
+    } else if (argc == 2) {
+      n = atoi(argv[1]);
+      uniform_int_distribution<int> dis(0, 9999);
+      k = dis(gen);
+    } else {
+      uniform_int_distribution<int> n_dis(1, 10000);
+      n = n_dis(gen);
+      uniform_int_distribution<int> k_dis(0, 9999);
+      k = k_dis(gen);
+    }
+    vector<int> A;
+    for (size_t i = 0; i < n; ++i) {
+      uniform_int_distribution<int> dis(-1000, 1000);
+      A.emplace_back(dis(gen));
+    }
+    /*
+    copy(A.begin(), A.end(), ostream_iterator<int>(cout, " "));
+    cout << endl;
+    //*/
+    auto ans = FindLongestSubarrayLessEqualK(A, k);
+    CheckAnswer(A, ans, k);
+  }
+  return 0;
+}
