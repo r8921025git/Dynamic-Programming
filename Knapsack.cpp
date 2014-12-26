@@ -79,6 +79,7 @@ void SmallTest() {
                         {40, 220},
                         {10, 99}};
   assert(695 == Knapsack(130, items));
+  assert(695 == Knapsack_2D(130, items));
 }
 
 int main(int argc, char* argv[]) {
@@ -86,27 +87,11 @@ int main(int argc, char* argv[]) {
   default_random_engine gen((random_device())());
   vector<int> weight, value;
   int n, W;
-  if (argc == 1) {
-    uniform_int_distribution<int> n_dis(1, 5);
+
+    uniform_int_distribution<int> n_dis(1, 10);
     n = n_dis(gen);
-    uniform_int_distribution<int> W_dis(1, 100);
-    W = W_dis(gen);
     weight = RandVector(n), value = RandVector(n);
-  } else if (argc == 2) {
-    n = atoi(argv[1]);
-    uniform_int_distribution<int> W_dis(1, 1000);
-    W = W_dis(gen);
-    weight = RandVector(n), value = RandVector(n);
-  } else {
-    n = atoi(argv[1]);
-    W = atoi(argv[2]);
-    for (int i = 0; i < n; ++i) {
-      weight.emplace_back(atoi(argv[3 + i]));
-    }
-    for (int i = 0; i < n; ++i) {
-      value.emplace_back(atoi(argv[3 + i + n]));
-    }
-  }
+
   cout << "Weight: ";
   for (int i = 0; i < n; ++i) {
     cout << weight[i] << ' ';
@@ -120,6 +105,10 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < weight.size(); ++i) {
     items.emplace_back(Item{weight[i], value[i]});
   }
+  
+    uniform_int_distribution<int> W_dis(1, 200);
+    W = W_dis(gen);
+  
   cout << "Knapsack size = " << W << endl;
   cout << "all value = " << Knapsack(W, items) << endl;
   cout << "all value (2D) = " << Knapsack_2D(W, items) << endl;
