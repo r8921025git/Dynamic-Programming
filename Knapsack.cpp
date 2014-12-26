@@ -45,18 +45,18 @@ int Knapsack_2D(int w, const vector<Item>& items) {
   vector<vector<int>> V(w+1, vector<int>(items.size()+1, 0));
   for (int i = 1; i <= items.size(); ++i) {
     int itemIdx = i-1;
-    for (int j=items[itemIdx].weight; j<=w; ++j) {
-      int a = V[j][i-1];
-      int b = V[j-items[itemIdx].weight][i-1]+items[itemIdx].value;
-      V[j][i]=max(a,b);
+    //for (int j=items[itemIdx].weight; j<=w; ++j) {
+    for (int j=1; j<=w; ++j) {
+        if (j<items[itemIdx].weight)
+            V[j][i] = V[j][i-1];
+        else {
+            int a = V[j][i-1];
+            int b = V[j-items[itemIdx].weight][i-1]+items[itemIdx].value;
+            V[j][i]=max(a,b);
+        }
     }
   }
-  int result=-1;
-  for (int i = 1; i <= items.size(); ++i) {
-      if (V[w][i]>result)
-        result = V[w][i];
-  }
-  return result;
+  return V[w][items.size()];
 }
 // @exclude
 
@@ -87,9 +87,9 @@ int main(int argc, char* argv[]) {
   vector<int> weight, value;
   int n, W;
   if (argc == 1) {
-    uniform_int_distribution<int> n_dis(1, 100);
+    uniform_int_distribution<int> n_dis(1, 5);
     n = n_dis(gen);
-    uniform_int_distribution<int> W_dis(1, 1000);
+    uniform_int_distribution<int> W_dis(1, 100);
     W = W_dis(gen);
     weight = RandVector(n), value = RandVector(n);
   } else if (argc == 2) {
